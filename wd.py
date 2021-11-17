@@ -290,7 +290,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Please input a word!")
     else:
-        db = os.path.join(os.path.expanduser('~'), '.misc', 'stardict.db')
+        db = os.path.join(os.path.expanduser('~'), '.local/share/stardict', 'stardict.db')
         sd = StarDict(db, False)
         result = sd.query(sys.argv[1])
         if result is None:
