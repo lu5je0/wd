@@ -1,17 +1,12 @@
 #! /usr/bin/env python3
 
 import os, sqlite3, sys
+import json
+import threading
+import platform
 
 #----------------------------------------------------------------------
-# python3 compatible
-#----------------------------------------------------------------------
-if sys.version_info[0] >= 3:
-    unicode = str
-    long = int
-    xrange = range
-
-#----------------------------------------------------------------------
-# StarDict 
+# StarDict
 #----------------------------------------------------------------------
 class StarDict (object):
 
@@ -55,8 +50,8 @@ class StarDict (object):
         self.__conn.executescript(sql)
         self.__conn.commit()
 
-        fields = ( 'id', 'word', 'sw', 'phonetic', 'definition', 
-            'translation', 'pos', 'collins', 'oxford', 'tag', 'bnc', 'frq', 
+        fields = ( 'id', 'word', 'sw', 'phonetic', 'definition',
+            'translation', 'pos', 'collins', 'oxford', 'tag', 'bnc', 'frq',
             'exchange', 'detail', 'audio' )
         self.__fields = tuple([(fields[i], i) for i in range(len(fields))])
         self.__names = { }
@@ -100,9 +95,9 @@ class StarDict (object):
     def query (self, key):
         c = self.__conn.cursor()
         record = None
-        if isinstance(key, int) or isinstance(key, long):
+        if isinstance(key, int) or isinstance(key, int):
             c.execute('select * from stardict where id = ?;', (key,))
-        elif isinstance(key, str) or isinstance(key, unicode):
+        elif isinstance(key, str) or isinstance(key, str):
             c.execute('select * from stardict where word = ?', (key,))
         else:
             return None
@@ -135,7 +130,7 @@ class StarDict (object):
             return []
         querys = []
         for key in keys:
-            if isinstance(key, int) or isinstance(key, long):
+            if isinstance(key, int) or isinstance(key, int):
                 querys.append('id = ?')
             elif key is not None:
                 querys.append('word = ?')
@@ -150,7 +145,7 @@ class StarDict (object):
             query_id[obj['id']] = obj
         results = []
         for key in keys:
-            if isinstance(key, int) or isinstance(key, long):
+            if isinstance(key, int) or isinstance(key, int):
                 results.append(query_id.get(key, None))
             elif key is not None:
                 results.append(query_word.get(key.lower(), None))
@@ -181,7 +176,7 @@ class StarDict (object):
 
     # 删除单词
     def remove (self, key, commit = True):
-        if isinstance(key, int) or isinstance(key, long):
+        if isinstance(key, int) or isinstance(key, int):
             sql = 'DELETE FROM stardict WHERE id=?;'
         else:
             sql = 'DELETE FROM stardict WHERE word=?;'
@@ -230,7 +225,7 @@ class StarDict (object):
                     return False
             return False
         sql = 'UPDATE stardict SET ' + ', '.join(['%s=?'%n for n in names])
-        if isinstance(key, str) or isinstance(key, unicode):
+        if isinstance(key, str) or isinstance(key, str):
             sql += ' WHERE word=?;'
         else:
             sql += ' WHERE id=?;'
@@ -286,6 +281,15 @@ BLUE_PATTERN = '\033[34m{}\033[0m'
 PEP_PATTERN = '\033[36m{}\033[0m'
 BROWN_PATTERN = '\033[33m{}\033[0m'
 
+def get_say_cmd():
+    s = platform.system()
+    if(s =="Windows"):
+        return 'wsay'
+    elif(s == "Linux"):
+        return 'wsay -v 2'
+    else:
+        return 'say -v Alex'
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("Please input a word!")
@@ -296,6 +300,9 @@ if __name__ == '__main__':
         if result is None:
             print("未找到该单词")
         else:
+            thread = threading.Thread(target=lambda : os.system(get_say_cmd() + " " + sys.argv[1]))
+            thread.setDaemon(True)
+            thread.start()
             print('[{}]'.format(color(result['phonetic'], BLUE_PATTERN)))
             print("中文释义：")
             print(color(result['translation'], GREEN_PATTERN))
