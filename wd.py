@@ -301,7 +301,7 @@ if __name__ == '__main__':
             print("未找到该单词")
         else:
             thread = threading.Thread(target=lambda : os.system(get_say_cmd() + " " + sys.argv[1]))
-            thread.setDaemon(True)
+            thread.daemon = True
             thread.start()
             print('[{}]'.format(color(result['phonetic'], BLUE_PATTERN)))
             print("中文释义：")
