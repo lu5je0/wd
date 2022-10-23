@@ -2,7 +2,6 @@
 
 import os, sqlite3, sys
 import json
-import threading
 import platform
 
 #----------------------------------------------------------------------
@@ -300,9 +299,7 @@ if __name__ == '__main__':
         if result is None:
             print("未找到该单词")
         else:
-            thread = threading.Thread(target=lambda : os.system(get_say_cmd() + " " + sys.argv[1]))
-            thread.daemon = True
-            thread.start()
+            os.popen('wsay -v 2 {} 2>/dev/null'.format(sys.argv[1]))
             print('[{}]'.format(color(result['phonetic'], BLUE_PATTERN)))
             print("中文释义：")
             print(color(result['translation'], GREEN_PATTERN))
