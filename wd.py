@@ -299,7 +299,7 @@ if __name__ == '__main__':
         if result is None:
             print("未找到该单词")
         else:
-            os.popen('wsay -v 2 {} 2>/dev/null'.format(sys.argv[1]))
+            os.popen(get_say_cmd() + ' {} 2>/dev/null'.format(sys.argv[1]))
             print('[{}]'.format(color(result['phonetic'], BLUE_PATTERN)))
             print("中文释义：")
             print(color(result['translation'], GREEN_PATTERN))
