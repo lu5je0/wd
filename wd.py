@@ -3,6 +3,7 @@
 import os, sqlite3, sys
 import json
 import platform
+import color_pattern
 
 #----------------------------------------------------------------------
 # StarDict
@@ -274,12 +275,6 @@ class StarDict (object):
 def color(txt, color):
     return color.format(txt)
 
-RED_PATTERN = '\033[31m{}\033[0m'
-GREEN_PATTERN = '\033[32m{}\033[0m'
-BLUE_PATTERN = '\033[34m{}\033[0m'
-PEP_PATTERN = '\033[36m{}\033[0m'
-BROWN_PATTERN = '\033[33m{}\033[0m'
-
 def get_say_cmd():
     s = platform.system()
     if(s =="Windows"):
@@ -300,10 +295,10 @@ if __name__ == '__main__':
             print("未找到该单词")
         else:
             os.popen('wsay -v 2 {} 2>/dev/null'.format(sys.argv[1]))
-            print('[{}]'.format(color(result['phonetic'], BLUE_PATTERN)))
+            print('[{}]'.format(color(result['phonetic'], color_pattern.BLUE_PATTERN)))
             print("中文释义：")
-            print(color(result['translation'], GREEN_PATTERN))
+            print(color(result['translation'], color_pattern.GREEN_PATTERN))
             print("英文释义：")
-            print(color(result['definition'], PEP_PATTERN))
+            print(color(result['definition'], color_pattern.PEP_PATTERN))
             print("变形：")
-            print(color(result['exchange'], BROWN_PATTERN))
+            print(color(result['exchange'], color_pattern.BROWN_PATTERN))
